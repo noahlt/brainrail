@@ -4,6 +4,11 @@
 
 <head>
 	<title>MindRail</title>
+  <style type="text/css">
+  .completed {
+    color: #999;
+  }
+  </style>
 </head>
 
 <body>
@@ -12,9 +17,12 @@
   </table>
   <div id="new-task">
     <input></input>
-    <button data-time="5">5s</button>
-    <button data-time="60">1m</button>
-    <button data-time="120">2m</button>
+    <button class="add-task" data-time="5">5s</button>
+    <button class="add-task" data-time="60">1m</button>
+    <button class="add-task" data-time="120">2m</button>
+    <button class="add-task" data-time="300">5m</button>
+    <button class="add-task" data-time="600">10m</button>
+    <button class="add-task" data-time="1200">20m</button>
   </div>
 </body>
 
