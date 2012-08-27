@@ -1,11 +1,19 @@
 Backbone.sync = function() {}; // turn off syncing to server.
 
+Math.signPrefix = function(x) {
+  if (x < 0) {
+    return '-';
+  } else {
+    return '';
+  }
+}
+
 $(function() {
 
   var Task = Backbone.Model.extend({
     defaults: {
       'text': 'new task',
-      'time': 60 // seconds
+      'time': 120 // seconds
     },
 
     tick: function() {
@@ -32,8 +40,15 @@ $(function() {
     },
 
     render: function() {
+      var absTime = Math.abs(this.model.get('time')),
+          signPrefix = Math.signPrefix(this.model.get('time')),
+          minutes = Math.floor(absTime / 60).toString(),
+          seconds = (absTime % 60).toString();
+      if (seconds.length < 2) {
+        seconds = '0' + seconds;
+      }
       this.$el.html('<td>' + this.model.get('text') + '</td>' +
-                    '<td>' + this.model.get('time') + '</td>');
+                    '<td>' + signPrefix + minutes + ':' + seconds + '</td>');
       return this;
     }
   });
@@ -48,8 +63,11 @@ $(function() {
       'click button': 'addOne'
     },
 
-    addOne: function() {
-      var task = Tasks.create({ text: this.$('input').val(), time: 60 });
+    addOne: function(e) {
+      var task = Tasks.create({
+        text: this.$('input').val(),
+        time: parseInt(e.target.dataset['time'])
+      });
       var view = new TaskView({ model: task });
       this.$('#tasks').append(view.render().el);
     }
@@ -59,10 +77,6 @@ $(function() {
 
 
   window.setInterval(function() {
-    console.log('---------------------');
-    Tasks.each(function(task) {
-      task.tick();
-      //console.log(task.get('text'), task.get('time'));
-    });
+    Tasks.each(function(task) { task.tick(); });
   }, 1000);
 });
