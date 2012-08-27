@@ -1,5 +1,3 @@
-Backbone.sync = function() {}; // turn off syncing to server.
-
 Math.signPrefix = function(x) {
   if (x < 0) {
     return '-';
@@ -44,6 +42,8 @@ $(function() {
 
   var TaskList = Backbone.Collection.extend({
     model: Task,
+
+    localStorage: new Store('mindrail-backbone'),
   });
 
   var Tasks = new TaskList;
@@ -91,10 +91,21 @@ $(function() {
     el: $("body"),
 
     events: {
-      'click button.add-task': 'addOne'
+      'click button.add-task': 'newTask'
     },
 
-    addOne: function(e) {
+    initialize: function() {
+      Tasks.bind('reset', this.reloadTasks, this);
+      Tasks.fetch();
+    },
+
+    addTask: function(task) {
+      console.log('adding new task', task);
+      var view = new TaskView({ model: task });
+      this.$('#tasks').append(view.render().el);
+    },
+
+    newTask: function(e) {
       var now = Date.now(),
           task = Tasks.create({
             text: this.$('input').val(),
@@ -102,8 +113,12 @@ $(function() {
             targetCompleteTime: now + seconds(parseInt(e.target.dataset['time'])),
             completeTime: NaN
           });
-      var view = new TaskView({ model: task });
-      this.$('#tasks').append(view.render().el);
+      this.addTask(task);
+    },
+
+    reloadTasks: function() {
+      console.log('reloaded');
+      Tasks.each(this.addTask);
     }
   });
 
