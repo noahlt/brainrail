@@ -38,13 +38,16 @@ $(function() {
     timeRemaining: function() {
       var x = Math.floor((this.get('targetCompleteTime') -
                            (this.get('completeTime') || Date.now())) / 1000);
-      console.log('[timeRemaining]', this.attributes);
       return x;
     },
 
     isComplete: function() {
       return !isNaN(this.get('completeTime'));
     },
+
+    isOvertime: function() {
+      return !this.isComplete() && this.timeRemaining() < 0;
+    }
   });
 
 
@@ -76,9 +79,12 @@ $(function() {
       var action = !this.model.isComplete() ?
                    '<button class="complete-task">Complete</button>' :
                    '<button class="destroy-task">x</button>';
-      this.$el.html('<td>' + this.model.get('text') + '</td>' +
-                    '<td>' + renderTime(this.model.timeRemaining()) + '</td>' +
-                    '<td>' + action + '</td>');
+      this.$el.html('<td class="text">' + this.model.get('text') + '</td>' +
+                    '<td class="timer">' + renderTime(this.model.timeRemaining()) + '</td>' +
+                    '<td class="action">' + action + '</td>');
+      if (this.model.isOvertime()) {
+        this.$el.find('.text, .timer').addClass('overtime');
+      }
       if (!this.model.isComplete()) {
         // save the timeout so we can stop the timer from updating after the task
         // is completed.

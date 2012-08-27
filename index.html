@@ -4,26 +4,24 @@
 
 <head>
 	<title>MindRail</title>
-  <style type="text/css">
-  .completed {
-    color: #999;
-  }
-  </style>
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
-  <h1>Hello, world!</h1>
   <table id="tasks">
   </table>
-  <div id="new-task">
-    <input></input>
-    <button class="add-task" data-time="5">5s</button>
-    <button class="add-task" data-time="60">1m</button>
-    <button class="add-task" data-time="120">2m</button>
-    <button class="add-task" data-time="300">5m</button>
-    <button class="add-task" data-time="600">10m</button>
-    <button class="add-task" data-time="1200">20m</button>
-  </div>
+  <table id="new-task">
+    <tr>
+      <td class="text"><input></input></td>
+      <!-- uncomment these for testing: -->
+      <!-- <button class="add-task" data-time="5">5s</button>
+      <button class="add-task" data-time="60">1m</button>
+      <button class="add-task" data-time="120">2m</button> -->
+      <td><button class="add-task" data-time="300">5m</button></td>
+      <td><button class="add-task" data-time="600">10m</button></td>
+      <td><button class="add-task" data-time="1200">20m</button></td>
+    </tr>
+  </table>
 </body>
 
 <script src="underscore-min.js"></script>

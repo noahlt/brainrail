@@ -1,0 +1,68 @@
+body {
+	width: 400px;
+  margin: 5% auto;
+}
+
+body * {
+  font-family: Helvetica;
+  font-size: 12px;
+}
+
+button {
+  background-color: #444;
+  color: #eee;
+  border: none;
+  border-radius: 10px;
+}
+
+button:hover {
+  background-color: #666;
+}
+
+tr {
+  height: 24px;
+}
+
+tr button.destroy-task {
+  display: none;
+}
+
+tr:hover button.destroy-task {
+  display: inline;
+  margin: 0 2px;
+}
+
+td {
+  margin: 0;
+}
+
+.completed {
+  color: #999;
+}
+
+.text {
+  width: 100%;
+}
+
+.timer {
+  font-family: Monaco, monospace;
+  text-align: right;
+  font-size: 11px;
+}
+
+/* this is a hack, so that column width is consistent even in the absense
+ * of a 'complete' button. */
+.action { min-width: 70px; }
+
+.overtime {
+  color: red;
+}
+
+#new-task {
+  margin: 2em 0;
+}
+
+.text input {
+  display: block;
+  width: 97%; /* 97% is a hack, chosen manually */
+}
