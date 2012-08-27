@@ -94,11 +94,13 @@ $(function() {
       this.model.set('completeTime', Date.now());
       this.model.save();
       clearTimeout(this.nextTimeout);
+      $('input').focus(); // refocus on text input for easy entry
     },
 
     destroy: function() {
       this.model.destroy();
       this.$el.detach();
+      $('input').focus(); // refocus on text input for easy entry
     }
   });
   
@@ -113,6 +115,7 @@ $(function() {
     },
 
     initialize: function() {
+      this.$input = this.$('input').focus();
       Tasks.bind('reset', this.reloadTasks, this);
       Tasks.fetch();
     },
@@ -125,12 +128,13 @@ $(function() {
     newTask: function(e) {
       var now = Date.now(),
           task = Tasks.create({
-            text: this.$('input').val(),
+            text: this.$input.val(),
             startTime: now,
             targetCompleteTime: now + seconds(parseInt(e.target.dataset['time'])),
             completeTime: NaN
           });
       this.addTask(task);
+      this.$input.val('').focus();
     },
 
     reloadTasks: function() {
