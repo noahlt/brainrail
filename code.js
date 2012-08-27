@@ -29,8 +29,17 @@ $(function() {
       'targetCompleteTime': NaN,
     },
 
+    initialize: function() {
+      if (!this.get('completeTime')) {
+        this.set({'completeTime': this.defaults.completeTime});
+      }
+    },
+
     timeRemaining: function() {
-      return Math.floor((this.get('targetCompleteTime') - Date.now()) / 1000);
+      var x = Math.floor((this.get('targetCompleteTime') -
+                           (this.get('completeTime') || Date.now())) / 1000);
+      console.log('[timeRemaining]', this.attributes);
+      return x;
     },
 
     isComplete: function() {
@@ -55,7 +64,8 @@ $(function() {
     tagName: 'tr',
 
     events: {
-      'click button.complete-task': 'complete'
+      'click button.complete-task': 'complete',
+      'click button.destroy-task': 'destroy'
     },
 
     initialize: function() {
@@ -63,24 +73,32 @@ $(function() {
     },
 
     render: function() {
-      var completeButton = !this.model.get('completed') ?
-        completeButton = '<button class="complete-task">Complete</button>' :
-        '';
+      var action = !this.model.isComplete() ?
+                   '<button class="complete-task">Complete</button>' :
+                   '<button class="destroy-task">x</button>';
       this.$el.html('<td>' + this.model.get('text') + '</td>' +
                     '<td>' + renderTime(this.model.timeRemaining()) + '</td>' +
-                    '<td>' + completeButton + '</td>');
-      if (!this.model.get('completed')) {
+                    '<td>' + action + '</td>');
+      if (!this.model.isComplete()) {
         // save the timeout so we can stop the timer from updating after the task
         // is completed.
         this.nextTimeout = setTimeout(this.render.bind(this), 1000);
+      } else {
+        this.$el.addClass('completed');
       }
       return this;
     },
 
     complete: function() {
       this.$el.addClass('completed');
-      this.model.set('completed', true);
+      this.model.set('completeTime', Date.now());
+      this.model.save();
       clearTimeout(this.nextTimeout);
+    },
+
+    destroy: function() {
+      this.model.destroy();
+      this.$el.detach();
     }
   });
   
@@ -100,7 +118,6 @@ $(function() {
     },
 
     addTask: function(task) {
-      console.log('adding new task', task);
       var view = new TaskView({ model: task });
       this.$('#tasks').append(view.render().el);
     },
@@ -117,7 +134,6 @@ $(function() {
     },
 
     reloadTasks: function() {
-      console.log('reloaded');
       Tasks.each(this.addTask);
     }
   });
